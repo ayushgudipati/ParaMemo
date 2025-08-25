@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Memorization App</title>
 <style>
   body {
@@ -23,7 +23,7 @@
     padding: 10px;
     border-radius: 8px;
     margin-bottom: 10px;
-    white-space: pre-wrap;
+    white-space: normal; /* we use <br> + spaces */
   }
   input[type="text"] {
     width: 90%;
@@ -45,50 +45,58 @@
     color: white;
     cursor: pointer;
   }
-  button:hover {
-    background: #FF69B4;
-  }
+  button:hover { background: #FF69B4; }
 </style>
 </head>
 <body>
 
 <h1>Memorization App</h1>
 <div id="console"></div>
-<input type="text" id="userInput" placeholder="Type here..." autofocus />
+<input type="text" id="userInput" placeholder="Paste your paragraph, then press Submit" autofocus />
 <button id="submitBtn">Submit</button>
 
 <script>
 const consoleDiv = document.getElementById('console');
-const userInput = document.getElementById('userInput');
-const submitBtn = document.getElementById('submitBtn');
+const userInput   = document.getElementById('userInput');
+const submitBtn   = document.getElementById('submitBtn');
 
 let text = '';
 let words = [];
 let currentIndex = 1;
 let correctCount = 0;
-let state = 'inputParagraph'; // inputParagraph, practicing, finalScore
+let state = 'inputParagraph'; // inputParagraph, waitingPracticeInput, waitingFinalInput, finalScoreChoice
 
-function appendConsole(msg, newLine = true) {
-  if (newLine) {
-    consoleDiv.innerHTML += msg + "<br>";
-  } else {
-    consoleDiv.innerHTML += msg + " ";
-  }
+// Basic HTML escape so user text can't inject tags
+function escapeHTML(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Append to "console": newline=true -> <br>, newline=false -> space
+function appendConsole(msg = '', newline = true) {
+  const safe = escapeHTML(msg);
+  consoleDiv.innerHTML += newline ? (safe + '<br>') : (safe + ' ');
   consoleDiv.scrollTop = consoleDiv.scrollHeight;
 }
+
 function clearConsole() {
-  consoleDiv.textContent = "\n".repeat(40); // mimic clear screen
+  consoleDiv.innerHTML = '<br>'.repeat(40); // mimic a clear screen
 }
 
+// Normalize strings for comparison (case & spacing)
+function norm(s) {
+  return s.toLowerCase().trim().replace(/\s+/g, ' ');
+}
+
+// Reveal words one-by-one on ONE LINE
 function showWords(wordsToShow, callback) {
   let i = 0;
   function showNext() {
     if (i < wordsToShow.length) {
-      appendConsole(wordsToShow[i], false); // <-- space, not newline
+      appendConsole(wordsToShow[i], false); // space, not newline
       i++;
       setTimeout(showNext, 400);
     } else {
-      appendConsole(""); // add a line break after the phrase
+      appendConsole(''); // end line after the phrase
       callback();
     }
   }
@@ -98,11 +106,11 @@ function showWords(wordsToShow, callback) {
 function practiceStep() {
   const shownWords = words.slice(0, currentIndex);
   clearConsole();
-  appendConsole(`Memorize the first ${currentIndex} words:\n`);
+  appendConsole(`Memorize the first ${currentIndex} words:`);
   showWords(shownWords, () => {
-    // clear again right before input prompt
+    // clear again right before prompting (matches your Python flow)
     clearConsole();
-    appendConsole(`Type the first ${currentIndex} words and press Submit.`);
+    appendConsole(`Type the first ${currentIndex} words and press Submit:`);
     state = 'waitingPracticeInput';
   });
 }
@@ -114,64 +122,63 @@ function finalScoreStep() {
 }
 
 submitBtn.addEventListener('click', () => {
-  const input = userInput.value.trim();
+  const input = userInput.value;
   userInput.value = '';
 
   if (state === 'inputParagraph') {
-    text = input;
-    words = text.split(' ');
-    appendConsole('\nParagraph saved. Starting practice...');
+    text  = input;
+    words = text.trim().split(/\s+/); // split on any whitespace
+    appendConsole('Paragraph saved. Starting practice...');
     practiceStep();
-    state = 'practicing';
   }
   else if (state === 'waitingPracticeInput') {
-    const shownWords = words.slice(0, currentIndex);
-    if (input.toLowerCase() === shownWords.join(' ').toLowerCase()) {
-      appendConsole('\n✅ Correct!');
+    const shown = words.slice(0, currentIndex).join(' ');
+    if (norm(input) === norm(shown)) {
+      appendConsole('✅ Correct!');
       correctCount++;
       currentIndex++;
       if (currentIndex <= words.length) {
         practiceStep();
       } else {
-        appendConsole('\nPractice complete!');
+        appendConsole('Practice complete!');
         finalScoreStep();
       }
     } else {
-      appendConsole('\n❌ Wrong! Try again.');
-      setTimeout(practiceStep, 700); // short pause before retry
+      appendConsole('❌ Wrong! Try again.');
+      setTimeout(practiceStep, 700);
     }
   }
   else if (state === 'waitingFinalInput') {
-    if (input.toLowerCase() === text.toLowerCase()) {
-      appendConsole(`\n🎉 Final Score: ${correctCount}/${words.length} (${((correctCount/words.length)*100).toFixed(1)}%)`);
+    if (norm(input) === norm(text)) {
+      appendConsole(`🎉 Final Score: ${correctCount}/${words.length} (${((correctCount/words.length)*100).toFixed(1)}%)`);
       appendConsole('You memorized it perfectly!');
     } else {
-      appendConsole('\n❌ Incorrect. You can retry the paragraph or redo practice.');
+      appendConsole('❌ Incorrect. You can retry the paragraph or redo practice.');
+      appendConsole('Type 1 to retry final input, 2 to redo practice, then press Submit:');
       state = 'finalScoreChoice';
-      appendConsole('\nType 1 to retry final input, 2 to redo practice and press Submit.');
     }
   }
   else if (state === 'finalScoreChoice') {
-    if (input === '1') {
+    if (input.trim() === '1') {
       finalScoreStep();
-    } else if (input === '2') {
+    } else if (input.trim() === '2') {
       currentIndex = 1;
       correctCount = 0;
       practiceStep();
-      state = 'practicing';
     } else {
-      appendConsole('\nInvalid choice, defaulting to retry final input.');
+      appendConsole('Invalid choice, defaulting to retry final input.');
       finalScoreStep();
     }
   }
 });
 
-// allow Enter key to submit
-userInput.addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') {
-    submitBtn.click();
-  }
+// Enter key submits
+userInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') submitBtn.click();
 });
+
+// Boot text in console
+appendConsole('Paste your paragraph in the input below and press Submit to begin.');
 </script>
 
 </body>
