@@ -3,66 +3,66 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ParaMemo 1.0.9</title>
+<title>ParaMemo 1.0.10</title>
 <style>
-  body {
-    background: #1E1F40;
-    color: #FFFFFF;
-    font-family: monospace;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
-  h1 {
-    font-size: 2.5rem; /* Larger heading */
-  }
-  #console {
-    background: #0C0E1B;
-    width: 90%;
-    max-width: 600px;
-    height: 400px;
-    overflow-y: auto;
-    padding: 15px; /* Increased padding */
-    border-radius: 8px;
-    margin-bottom: 10px;
-    white-space: normal;
-    font-size: 1.2rem; /* Larger console text */
-  }
-  input[type="text"] {
-    width: 90%;
-    max-width: 600px;
-    padding: 15px; /* Increased padding */
-    font-family: monospace;
-    font-size: 1.2rem; /* Larger input text */
-    border-radius: 5px;
-    border: none;
-  }
-  input[type="text"].disabled {
-    background-color: #555;
-    cursor: not-allowed;
-  }
-  button {
-    margin-top: 10px;
-    padding: 10px 20px; /* Increased padding */
-    font-family: monospace;
-    font-size: 1.2rem; /* Larger button text */
-    border-radius: 5px;
-    border: none;
-    background: #AB5DCE;
-    color: white;
-    cursor: pointer;
-  }
-  button:hover { background: #FF69B4; }
-  button:disabled {
-    background: #555;
-    cursor: not-allowed;
-  }
+  body {
+    background: #1E1F40;
+    color: #FFFFFF;
+    font-family: monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  h1 {
+    font-size: 2.5rem; /* Larger heading */
+  }
+  #console {
+    background: #0C0E1B;
+    width: 90%;
+    max-width: 600px;
+    height: 400px;
+    overflow-y: auto;
+    padding: 15px; /* Increased padding */
+    border-radius: 8px;
+    margin-bottom: 10px;
+    white-space: normal;
+    font-size: 1.2rem; /* Larger console text */
+  }
+  input[type="text"] {
+    width: 90%;
+    max-width: 600px;
+    padding: 15px; /* Increased padding */
+    font-family: monospace;
+    font-size: 1.2rem; /* Larger input text */
+    border-radius: 5px;
+    border: none;
+  }
+  input[type="text"].disabled {
+    background-color: #555;
+    cursor: not-allowed;
+  }
+  button {
+    margin-top: 10px;
+    padding: 10px 20px; /* Increased padding */
+    font-family: monospace;
+    font-size: 1.2rem; /* Larger button text */
+    border-radius: 5px;
+    border: none;
+    background: #AB5DCE;
+    color: white;
+    cursor: pointer;
+  }
+  button:hover { background: #FF69B4; }
+  button:disabled {
+    background: #555;
+    cursor: not-allowed;
+  }
 </style>
 </head>
 <body>
 
-<h1>ParaMemo 1.0.9</h1>
+<h1>ParaMemo 1.0.10</h1>
 <div id="console"></div>
 <input type="text" id="userInput" placeholder="Paste your paragraph, then press Submit" autofocus />
 <button id="submitBtn">Submit</button>
@@ -116,6 +116,22 @@ function enableSubmit() {
   submitBtn.disabled = false;
 }
 
+// New function to show messages with delays
+function showMessagesSequentially(messages, delay, onComplete) {
+  let i = 0;
+  function showNext() {
+    if (i < messages.length) {
+      clearConsole();
+      appendConsole(messages[i]);
+      i++;
+      setTimeout(showNext, delay);
+    } else {
+      onComplete();
+    }
+  }
+  showNext();
+}
+
 function showWords(wordsToShow, callback) {
   let i = 0;
   function showNext() {
@@ -132,20 +148,16 @@ function showWords(wordsToShow, callback) {
 }
 
 function practiceStep() {
-  // Disable input and button while the words are being displayed
   disableInput();
   disableSubmit();
   const shownWords = words.slice(0, currentIndex);
   clearConsole();
   appendConsole(`Memorize the first ${currentIndex} words:`);
-  // Show the words right away
   appendConsole(shownWords.join(' '));
-  // After 2 seconds, clear them and prompt the user
   setTimeout(() => {
     clearConsole();
     appendConsole(`Type the first ${currentIndex} words and press Submit:`);
     state = 'waitingPracticeInput';
-    // Enable input and button when it's the user's turn
     enableInput();
     enableSubmit();
   }, 2000);
@@ -155,61 +167,75 @@ function finalScoreStep() {
   clearConsole();
   appendConsole('Now enter the full paragraph and press Submit:');
   state = 'waitingFinalInput';
-  // Enable input and button when it's the user's turn
   enableInput();
   enableSubmit();
 }
 
 submitBtn.addEventListener('click', () => {
-  // Disable input and button immediately upon submission
   disableInput();
   disableSubmit();
   const input = userInput.value;
   userInput.value = '';
 
   if (state === 'inputParagraph') {
-    text  = input;
+    text = input;
     words = text.trim().split(/\s+/);
     appendConsole('Paragraph saved. Starting practice...');
-    // The practice step function will handle enabling the input and button when needed
     practiceStep();
-  }
-  else if (state === 'waitingPracticeInput') {
+  } else if (state === 'waitingPracticeInput') {
     const shown = words.slice(0, currentIndex).join(' ');
     if (norm(input) === norm(shown)) {
-      appendConsole('✅ Correct!');
-      correctCount++;
-      currentIndex++;
-      if (currentIndex <= words.length) {
-        // Automatically move to the next step, which will re-enable input later
-        setTimeout(practiceStep, 700);
-      } else {
-        appendConsole('Practice complete!');
-        finalScoreStep();
-      }
+      showMessagesSequentially(
+        ['✅ Correct!'],
+        700,
+        () => {
+          correctCount++;
+          currentIndex++;
+          if (currentIndex <= words.length) {
+            practiceStep();
+          } else {
+            showMessagesSequentially(
+              ['Practice complete!'],
+              1500,
+              () => {
+                finalScoreStep();
+              }
+            );
+          }
+        }
+      );
     } else {
-      appendConsole('❌ Wrong! Try again.');
-      // Re-run the practice step, which will re-enable input
-      setTimeout(practiceStep, 700);
+      showMessagesSequentially(
+        ['❌ Wrong!', 'Try again.'],
+        700,
+        () => {
+          practiceStep();
+        }
+      );
     }
-  }
-  else if (state === 'waitingFinalInput') {
+  } else if (state === 'waitingFinalInput') {
     if (norm(input) === norm(text)) {
-      appendConsole(`🎉 Final Score: ${correctCount}/${words.length} (${((correctCount/words.length)*100).toFixed(1)}%)`);
-      appendConsole('You memorized it perfectly!');
-      // All done, enable both just in case user wants to restart by refreshing
-      enableInput();
-      enableSubmit();
+      showMessagesSequentially(
+        [`🎉 Final Score: ${correctCount}/${words.length} (${((correctCount/words.length)*100).toFixed(1)}%)`, 'You memorized it perfectly!'],
+        2000,
+        () => {
+          enableInput();
+          enableSubmit();
+        }
+      );
     } else {
-      appendConsole('❌ Incorrect. You can retry the paragraph or redo practice.');
-      appendConsole('Type 1 to retry final input, 2 to redo practice, then press Submit:');
-      state = 'finalScoreChoice';
-      // Enable input and button for the choice
-      enableInput();
-      enableSubmit();
+      showMessagesSequentially(
+        ['❌ Incorrect.', 'You can retry the paragraph or redo practice.'],
+        1500,
+        () => {
+          appendConsole('Type 1 to retry final input, 2 to redo practice, then press Submit:');
+          state = 'finalScoreChoice';
+          enableInput();
+          enableSubmit();
+        }
+      );
     }
-  }
-  else if (state === 'finalScoreChoice') {
+  } else if (state === 'finalScoreChoice') {
     if (input.trim() === '1') {
       finalScoreStep();
     } else if (input.trim() === '2') {
@@ -227,7 +253,6 @@ userInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') submitBtn.click();
 });
 
-// Set initial state: enable everything so the user can begin
 appendConsole('Paste your paragraph in the input below and press Submit to begin.');
 enableInput();
 enableSubmit();
