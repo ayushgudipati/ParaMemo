@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ParaMemo 1.0.10</title>
+<title>ParaMemo 1.0.11</title>
 <style>
   body {
     background: #1E1F40;
@@ -62,15 +62,15 @@
 </head>
 <body>
 
-<h1>ParaMemo 1.0.10</h1>
+<h1>ParaMemo 1.0.11</h1>
 <div id="console"></div>
 <input type="text" id="userInput" placeholder="Paste your paragraph, then press Submit" autofocus />
 <button id="submitBtn">Submit</button>
 
 <script>
 const consoleDiv = document.getElementById('console');
-const userInput   = document.getElementById('userInput');
-const submitBtn   = document.getElementById('submitBtn');
+const userInput   = document.getElementById('userInput');
+const submitBtn   = document.getElementById('submitBtn');
 
 let text = '';
 let words = [];
@@ -80,177 +80,155 @@ let state = 'inputParagraph';
 
 // Escape HTML so user input is safe
 function escapeHTML(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 function appendConsole(msg = '', newline = true) {
-  const safe = escapeHTML(msg);
-  consoleDiv.innerHTML += newline ? (safe + '<br>') : (safe + ' ');
-  consoleDiv.scrollTop = consoleDiv.scrollHeight;
+  const safe = escapeHTML(msg);
+  consoleDiv.innerHTML += newline ? (safe + '<br>') : (safe + ' ');
+  consoleDiv.scrollTop = consoleDiv.scrollHeight;
 }
 
 function clearConsole() {
-  consoleDiv.innerHTML = '<br>'.repeat(40);
+  consoleDiv.innerHTML = '<br>'.repeat(40);
 }
 
 function norm(s) {
-  return s.toLowerCase().trim().replace(/\s+/g, ' ');
+  return s.toLowerCase().trim().replace(/\s+/g, ' ');
 }
 
 function disableInput() {
-  userInput.disabled = true;
-  userInput.classList.add('disabled');
+  userInput.disabled = true;
+  userInput.classList.add('disabled');
 }
 
 function enableInput() {
-  userInput.disabled = false;
-  userInput.classList.remove('disabled');
-  userInput.focus();
+  userInput.disabled = false;
+  userInput.classList.remove('disabled');
+  userInput.focus();
 }
 
 function disableSubmit() {
-  submitBtn.disabled = true;
+  submitBtn.disabled = true;
 }
 
 function enableSubmit() {
-  submitBtn.disabled = false;
-}
-
-// New function to show messages with delays
-function showMessagesSequentially(messages, delay, onComplete) {
-  let i = 0;
-  function showNext() {
-    if (i < messages.length) {
-      clearConsole();
-      appendConsole(messages[i]);
-      i++;
-      setTimeout(showNext, delay);
-    } else {
-      onComplete();
-    }
-  }
-  showNext();
+  submitBtn.disabled = false;
 }
 
 function showWords(wordsToShow, callback) {
-  let i = 0;
-  function showNext() {
-    if (i < wordsToShow.length) {
-      appendConsole(wordsToShow[i], false);
-      i++;
-      setTimeout(showNext, 400);
-    } else {
-      appendConsole('');
-      callback();
-    }
-  }
-  showNext();
+  let i = 0;
+  function showNext() {
+    if (i < wordsToShow.length) {
+      appendConsole(wordsToShow[i], false);
+      i++;
+      setTimeout(showNext, 400);
+    } else {
+      appendConsole('');
+      callback();
+    }
+  }
+  showNext();
 }
 
 function practiceStep() {
-  disableInput();
-  disableSubmit();
-  const shownWords = words.slice(0, currentIndex);
-  clearConsole();
-  appendConsole(`Memorize the first ${currentIndex} words:`);
-  appendConsole(shownWords.join(' '));
-  setTimeout(() => {
-    clearConsole();
-    appendConsole(`Type the first ${currentIndex} words and press Submit:`);
-    state = 'waitingPracticeInput';
-    enableInput();
-    enableSubmit();
-  }, 2000);
+  disableInput();
+  disableSubmit();
+  const shownWords = words.slice(0, currentIndex);
+  clearConsole();
+  appendConsole(`Memorize the first ${currentIndex} words:`);
+  appendConsole(shownWords.join(' '));
+  setTimeout(() => {
+    clearConsole();
+    appendConsole(`Type the first ${currentIndex} words and press Submit:`);
+    state = 'waitingPracticeInput';
+    enableInput();
+    enableSubmit();
+  }, 2000);
 }
 
 function finalScoreStep() {
-  clearConsole();
-  appendConsole('Now enter the full paragraph and press Submit:');
-  state = 'waitingFinalInput';
-  enableInput();
-  enableSubmit();
+  clearConsole();
+  appendConsole('Now enter the full paragraph and press Submit:');
+  state = 'waitingFinalInput';
+  enableInput();
+  enableSubmit();
 }
 
 submitBtn.addEventListener('click', () => {
-  disableInput();
-  disableSubmit();
-  const input = userInput.value;
-  userInput.value = '';
+  disableInput();
+  disableSubmit();
+  const input = userInput.value;
+  userInput.value = '';
 
-  if (state === 'inputParagraph') {
-    text = input;
-    words = text.trim().split(/\s+/);
-    appendConsole('Paragraph saved. Starting practice...');
-    practiceStep();
-  } else if (state === 'waitingPracticeInput') {
-    const shown = words.slice(0, currentIndex).join(' ');
-    if (norm(input) === norm(shown)) {
-      showMessagesSequentially(
-        ['✅ Correct!'],
-        700,
-        () => {
-          correctCount++;
-          currentIndex++;
-          if (currentIndex <= words.length) {
-            practiceStep();
-          } else {
-            showMessagesSequentially(
-              ['Practice complete!'],
-              1500,
-              () => {
-                finalScoreStep();
-              }
-            );
-          }
-        }
-      );
-    } else {
-      showMessagesSequentially(
-        ['❌ Wrong!', 'Try again.'],
-        700,
-        () => {
-          practiceStep();
-        }
-      );
-    }
-  } else if (state === 'waitingFinalInput') {
-    if (norm(input) === norm(text)) {
-      showMessagesSequentially(
-        [`🎉 Final Score: ${correctCount}/${words.length} (${((correctCount/words.length)*100).toFixed(1)}%)`, 'You memorized it perfectly!'],
-        2000,
-        () => {
-          enableInput();
-          enableSubmit();
-        }
-      );
-    } else {
-      showMessagesSequentially(
-        ['❌ Incorrect.', 'You can retry the paragraph or redo practice.'],
-        1500,
-        () => {
-          appendConsole('Type 1 to retry final input, 2 to redo practice, then press Submit:');
-          state = 'finalScoreChoice';
-          enableInput();
-          enableSubmit();
-        }
-      );
-    }
-  } else if (state === 'finalScoreChoice') {
-    if (input.trim() === '1') {
-      finalScoreStep();
-    } else if (input.trim() === '2') {
-      currentIndex = 1;
-      correctCount = 0;
-      practiceStep();
-    } else {
-      appendConsole('Invalid choice, defaulting to retry final input.');
-      finalScoreStep();
-    }
-  }
+  if (state === 'inputParagraph') {
+    text = input;
+    words = text.trim().split(/\s+/);
+    appendConsole('Paragraph saved. Starting practice...');
+    practiceStep();
+  }
+  else if (state === 'waitingPracticeInput') {
+    const shown = words.slice(0, currentIndex).join(' ');
+    if (norm(input) === norm(shown)) {
+      appendConsole('✅ Correct!');
+      correctCount++;
+      currentIndex++;
+      if (currentIndex <= words.length) {
+        setTimeout(() => {
+          clearConsole();
+          practiceStep();
+        }, 700);
+      } else {
+        appendConsole('Practice complete!');
+        setTimeout(() => {
+          clearConsole();
+          finalScoreStep();
+        }, 1500);
+      }
+    } else {
+      appendConsole('❌ Wrong! Try again.');
+      setTimeout(() => {
+        clearConsole();
+        practiceStep();
+      }, 700);
+    }
+  }
+  else if (state === 'waitingFinalInput') {
+    if (norm(input) === norm(text)) {
+      appendConsole(`🎉 Final Score: ${correctCount}/${words.length} (${((correctCount/words.length)*100).toFixed(1)}%)`);
+      appendConsole('You memorized it perfectly!');
+      setTimeout(() => {
+        clearConsole();
+        enableInput();
+        enableSubmit();
+      }, 2000);
+    } else {
+      appendConsole('❌ Incorrect. You can retry the paragraph or redo practice.');
+      setTimeout(() => {
+        clearConsole();
+        appendConsole('Type 1 to retry final input, 2 to redo practice, then press Submit:');
+        state = 'finalScoreChoice';
+        enableInput();
+        enableSubmit();
+      }, 1500);
+    }
+  }
+  else if (state === 'finalScoreChoice') {
+    if (input.trim() === '1') {
+      finalScoreStep();
+    } else if (input.trim() === '2') {
+      currentIndex = 1;
+      correctCount = 0;
+      practiceStep();
+    } else {
+      appendConsole('Invalid choice, defaulting to retry final input.');
+      finalScoreStep();
+    }
+  }
 });
 
 userInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') submitBtn.click();
+  if (e.key === 'Enter') submitBtn.click();
 });
 
 appendConsole('Paste your paragraph in the input below and press Submit to begin.');
