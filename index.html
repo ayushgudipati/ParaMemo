@@ -104,15 +104,13 @@ function practiceStep() {
   const shownWords = words.slice(0, currentIndex);
   clearConsole();
   appendConsole(`Memorize the first ${currentIndex} words:`);
-
-  // NEW: clear the phrase after 2 seconds, then reveal words
+  // Show the words right away
+  appendConsole(shownWords.join(' '));
+  // After 2 seconds, clear them and prompt the user
   setTimeout(() => {
     clearConsole();
-    showWords(shownWords, () => {
-      clearConsole();
-      appendConsole(`Type the first ${currentIndex} words and press Submit:`);
-      state = 'waitingPracticeInput';
-    });
+    appendConsole(`Type the first ${currentIndex} words and press Submit:`);
+    state = 'waitingPracticeInput';
   }, 2000);
 }
 
