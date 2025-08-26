@@ -23,7 +23,7 @@
     padding: 10px;
     border-radius: 8px;
     margin-bottom: 10px;
-    white-space: normal; /* we use <br> + spaces */
+    white-space: normal;
   }
   input[type="text"] {
     width: 90%;
@@ -64,14 +64,13 @@ let text = '';
 let words = [];
 let currentIndex = 1;
 let correctCount = 0;
-let state = 'inputParagraph'; // inputParagraph, waitingPracticeInput, waitingFinalInput, finalScoreChoice
+let state = 'inputParagraph';
 
-// Basic HTML escape so user text can't inject tags
+// Escape HTML so user input is safe
 function escapeHTML(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// Append to "console": newline=true -> <br>, newline=false -> space
 function appendConsole(msg = '', newline = true) {
   const safe = escapeHTML(msg);
   consoleDiv.innerHTML += newline ? (safe + '<br>') : (safe + ' ');
@@ -79,24 +78,22 @@ function appendConsole(msg = '', newline = true) {
 }
 
 function clearConsole() {
-  consoleDiv.innerHTML = '<br>'.repeat(40); // mimic a clear screen
+  consoleDiv.innerHTML = '<br>'.repeat(40);
 }
 
-// Normalize strings for comparison (case & spacing)
 function norm(s) {
   return s.toLowerCase().trim().replace(/\s+/g, ' ');
 }
 
-// Reveal words one-by-one on ONE LINE
 function showWords(wordsToShow, callback) {
   let i = 0;
   function showNext() {
     if (i < wordsToShow.length) {
-      appendConsole(wordsToShow[i], false); // space, not newline
+      appendConsole(wordsToShow[i], false);
       i++;
       setTimeout(showNext, 400);
     } else {
-      appendConsole(''); // end line after the phrase
+      appendConsole('');
       callback();
     }
   }
@@ -107,12 +104,16 @@ function practiceStep() {
   const shownWords = words.slice(0, currentIndex);
   clearConsole();
   appendConsole(`Memorize the first ${currentIndex} words:`);
-  showWords(shownWords, () => {
-    // clear again right before prompting (matches your Python flow)
+
+  // NEW: clear the phrase after 2 seconds, then reveal words
+  setTimeout(() => {
     clearConsole();
-    appendConsole(`Type the first ${currentIndex} words and press Submit:`);
-    state = 'waitingPracticeInput';
-  });
+    showWords(shownWords, () => {
+      clearConsole();
+      appendConsole(`Type the first ${currentIndex} words and press Submit:`);
+      state = 'waitingPracticeInput';
+    });
+  }, 2000);
 }
 
 function finalScoreStep() {
@@ -127,7 +128,7 @@ submitBtn.addEventListener('click', () => {
 
   if (state === 'inputParagraph') {
     text  = input;
-    words = text.trim().split(/\s+/); // split on any whitespace
+    words = text.trim().split(/\s+/);
     appendConsole('Paragraph saved. Starting practice...');
     practiceStep();
   }
@@ -172,12 +173,10 @@ submitBtn.addEventListener('click', () => {
   }
 });
 
-// Enter key submits
 userInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') submitBtn.click();
 });
 
-// Boot text in console
 appendConsole('Paste your paragraph in the input below and press Submit to begin.');
 </script>
 
