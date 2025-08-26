@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ParaMemo 1.0.12</title>
+<title>ParaMemo 1.1.0 Beta</title>
 <style>
+  /* Base styles for the entire page */
   body {
     background: #1E1F40;
     color: #FFFFFF;
@@ -14,21 +15,27 @@
     align-items: center;
     padding: 20px;
   }
+  
+  /* Styling for the main heading */
   h1 {
     font-size: 2.5rem; /* Larger heading */
   }
+  
+  /* Styles for the console display area */
   #console {
     background: #0C0E1B;
     width: 90%;
     max-width: 600px;
     height: 400px;
     overflow-y: auto;
-    padding: 15px; /* Increased padding */
+    padding: 15px; /* Increased padding for better spacing */
     border-radius: 8px;
     margin-bottom: 10px;
     white-space: normal;
-    font-size: 1.2rem; /* Larger console text */
+    font-size: 1.2rem; /* Larger console text for readability */
   }
+  
+  /* Styles for the text input field */
   input[type="text"] {
     width: 90%;
     max-width: 600px;
@@ -38,10 +45,14 @@
     border-radius: 5px;
     border: none;
   }
+  
+  /* Styling for the disabled input state */
   input[type="text"].disabled {
     background-color: #555;
     cursor: not-allowed;
   }
+  
+  /* Styles for the submit button */
   button {
     margin-top: 10px;
     padding: 10px 20px; /* Increased padding */
@@ -53,7 +64,11 @@
     color: white;
     cursor: pointer;
   }
+  
+  /* Hover effect for the button */
   button:hover { background: #FF69B4; }
+  
+  /* Styling for the disabled button state */
   button:disabled {
     background: #555;
     cursor: not-allowed;
@@ -62,60 +77,70 @@
 </head>
 <body>
 
-<h1>ParaMemo 1.0.12</h1>
+<h1>ParaMemo 1.1.0 Beta</h1>
 <div id="console"></div>
 <input type="text" id="userInput" placeholder="Paste your paragraph, then press Submit" autofocus />
 <button id="submitBtn">Submit</button>
 
 <script>
+// Get references to the HTML elements
 const consoleDiv = document.getElementById('console');
 const userInput   = document.getElementById('userInput');
 const submitBtn   = document.getElementById('submitBtn');
 
+// Global variables for tracking the game state
 let text = '';
 let words = [];
 let currentIndex = 1;
 let correctCount = 0;
-let state = 'inputParagraph';
+let state = 'inputParagraph'; // Initial state of the application
 
-// Escape HTML so user input is safe
+// Helper function to escape HTML special characters in user input
 function escapeHTML(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
+// Helper function to append a message to the console
 function appendConsole(msg = '', newline = true) {
   const safe = escapeHTML(msg);
   consoleDiv.innerHTML += newline ? (safe + '<br>') : (safe + ' ');
   consoleDiv.scrollTop = consoleDiv.scrollHeight;
 }
 
+// Helper function to clear the console display
 function clearConsole() {
   consoleDiv.innerHTML = '<br>'.repeat(40);
 }
 
+// Helper function to normalize text for comparison
 function norm(s) {
   return s.toLowerCase().trim().replace(/\s+/g, ' ');
 }
 
+// Function to disable the user input field
 function disableInput() {
   userInput.disabled = true;
   userInput.classList.add('disabled');
 }
 
+// Function to enable the user input field and set focus
 function enableInput() {
   userInput.disabled = false;
   userInput.classList.remove('disabled');
   userInput.focus();
 }
 
+// Function to disable the submit button
 function disableSubmit() {
   submitBtn.disabled = true;
 }
 
+// Function to enable the submit button
 function enableSubmit() {
   submitBtn.disabled = false;
 }
 
+// Function to show words one by one
 function showWords(wordsToShow, callback) {
   let i = 0;
   function showNext() {
@@ -131,26 +156,29 @@ function showWords(wordsToShow, callback) {
   showNext();
 }
 
+// Function to handle the memorization practice step
 function practiceStep() {
-  // Disable input and button while the words are being displayed
+  // Disable input and button while the program is "thinking"
   disableInput();
   disableSubmit();
+  
   const shownWords = words.slice(0, currentIndex);
   clearConsole();
   appendConsole(`Memorize the first ${currentIndex} words:`);
-  // Show the words right away
   appendConsole(shownWords.join(' '));
-  // After 2 seconds, clear them and prompt the user
+  
+  // After a delay, clear the screen and prompt the user for input
   setTimeout(() => {
     clearConsole();
     appendConsole(`Type the first ${currentIndex} words and press Submit:`);
     state = 'waitingPracticeInput';
-    // Enable input and button when it's the user's turn
+    // Re-enable input and button for the user to type
     enableInput();
     enableSubmit();
   }, 2000);
 }
 
+// Function to handle the final score step
 function finalScoreStep() {
   clearConsole();
   appendConsole('Now enter the full paragraph and press Submit:');
@@ -160,18 +188,19 @@ function finalScoreStep() {
   enableSubmit();
 }
 
+// Main event listener for the Submit button click
 submitBtn.addEventListener('click', () => {
-  // Disable input and button immediately upon submission
+  // Disable input and button immediately upon submission to prevent double-clicks
   disableInput();
   disableSubmit();
   const input = userInput.value;
   userInput.value = '';
 
+  // Logic based on the current state of the application
   if (state === 'inputParagraph') {
     text  = input;
     words = text.trim().split(/\s+/);
     appendConsole('Paragraph saved. Starting practice...');
-    // The practice step function will handle enabling the input and button when needed
     practiceStep();
   }
   else if (state === 'waitingPracticeInput') {
@@ -181,7 +210,7 @@ submitBtn.addEventListener('click', () => {
       correctCount++;
       currentIndex++;
       if (currentIndex <= words.length) {
-        // Automatically move to the next step, which will re-enable input later
+        // Delay before moving to the next practice step
         setTimeout(practiceStep, 700);
       } else {
         appendConsole('Practice complete!');
@@ -189,7 +218,7 @@ submitBtn.addEventListener('click', () => {
       }
     } else {
       appendConsole('❌ Wrong! Try again.');
-      // Re-run the practice step, which will re-enable input
+      // Delay before re-running the practice step
       setTimeout(practiceStep, 700);
     }
   }
@@ -197,14 +226,14 @@ submitBtn.addEventListener('click', () => {
     if (norm(input) === norm(text)) {
       appendConsole(`🎉 Final Score: ${correctCount}/${words.length} (${((correctCount/words.length)*100).toFixed(1)}%)`);
       appendConsole('You memorized it perfectly!');
-      // All done, enable both just in case user wants to restart by refreshing
+      // Enable input and button at the end to allow for a new paragraph
       enableInput();
       enableSubmit();
     } else {
       appendConsole('❌ Incorrect. You can retry the paragraph or redo practice.');
       appendConsole('Type 1 to retry final input, 2 to redo practice, then press Submit:');
       state = 'finalScoreChoice';
-      // Enable input and button for the choice
+      // Enable input and button for the user's choice
       enableInput();
       enableSubmit();
     }
@@ -223,12 +252,14 @@ submitBtn.addEventListener('click', () => {
   }
 });
 
+// Event listener for the Enter key press in the input field
 userInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') submitBtn.click();
 });
 
-// Set initial state: enable everything so the user can begin
+// Initial setup on page load
 appendConsole('Paste your paragraph in the input below and press Submit to begin.');
+// Enable input and button so the user can start
 enableInput();
 enableSubmit();
 </script>
