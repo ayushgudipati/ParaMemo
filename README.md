@@ -31,4 +31,4 @@ ParaMemo is an open-source project. If you encounter any bugs or have suggestion
 
 ### **Contact**
 
-For inquiries, please open an issue on the repository.
+For inquiries, please email **ayush.gudipati@gmail.com** or message **+1 (940) 279-5219**.
