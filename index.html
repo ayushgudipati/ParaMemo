@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ParaMemo 1.0.6</title>
+<title>ParaMemo 1.0.7</title>
 <style>
   body {
     background: #1E1F40;
@@ -50,7 +50,7 @@
 </head>
 <body>
 
-<h1>ParaMemo 1.0.6</h1>
+<h1>ParaMemo 1.0.7</h1>
 <div id="console"></div>
 <input type="text" id="userInput" placeholder="Paste your paragraph, then press Submit" autofocus />
 <button id="submitBtn">Submit</button>
@@ -85,6 +85,18 @@ function norm(s) {
   return s.toLowerCase().trim().replace(/\s+/g, ' ');
 }
 
+// Disable and enable functions
+function disableInput() {
+  userInput.disabled = true;
+  userInput.classList.add('disabled');
+}
+
+function enableInput() {
+  userInput.disabled = false;
+  userInput.classList.remove('disabled');
+  userInput.focus();
+}
+
 function showWords(wordsToShow, callback) {
   let i = 0;
   function showNext() {
@@ -101,6 +113,8 @@ function showWords(wordsToShow, callback) {
 }
 
 function practiceStep() {
+  // Disable input while the words are being displayed
+  disableInput();
   const shownWords = words.slice(0, currentIndex);
   clearConsole();
   appendConsole(`Memorize the first ${currentIndex} words:`);
@@ -111,6 +125,8 @@ function practiceStep() {
     clearConsole();
     appendConsole(`Type the first ${currentIndex} words and press Submit:`);
     state = 'waitingPracticeInput';
+    // Enable input when it's the user's turn
+    enableInput();
   }, 2000);
 }
 
@@ -118,9 +134,13 @@ function finalScoreStep() {
   clearConsole();
   appendConsole('Now enter the full paragraph and press Submit:');
   state = 'waitingFinalInput';
+  // Enable input when it's the user's turn
+  enableInput();
 }
 
 submitBtn.addEventListener('click', () => {
+  // Disable input immediately upon submission
+  disableInput();
   const input = userInput.value;
   userInput.value = '';
 
@@ -128,6 +148,7 @@ submitBtn.addEventListener('click', () => {
     text  = input;
     words = text.trim().split(/\s+/);
     appendConsole('Paragraph saved. Starting practice...');
+    // The practice step function will handle enabling the input when needed
     practiceStep();
   }
   else if (state === 'waitingPracticeInput') {
@@ -137,13 +158,15 @@ submitBtn.addEventListener('click', () => {
       correctCount++;
       currentIndex++;
       if (currentIndex <= words.length) {
-        practiceStep();
+        // Automatically move to the next step, which will re-enable input later
+        setTimeout(practiceStep, 700);
       } else {
         appendConsole('Practice complete!');
         finalScoreStep();
       }
     } else {
       appendConsole('❌ Wrong! Try again.');
+      // Re-run the practice step, which will re-enable input
       setTimeout(practiceStep, 700);
     }
   }
@@ -155,6 +178,8 @@ submitBtn.addEventListener('click', () => {
       appendConsole('❌ Incorrect. You can retry the paragraph or redo practice.');
       appendConsole('Type 1 to retry final input, 2 to redo practice, then press Submit:');
       state = 'finalScoreChoice';
+      // Enable input for the choice
+      enableInput();
     }
   }
   else if (state === 'finalScoreChoice') {
@@ -175,7 +200,9 @@ userInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') submitBtn.click();
 });
 
+// Set initial state
 appendConsole('Paste your paragraph in the input below and press Submit to begin.');
+enableInput();
 </script>
 
 </body>
