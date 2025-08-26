@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ParaMemo 1.1.2 Beta</title>
+<title>ParaMemo 1.1.3</title>
 <style>
   /* Base styles for the entire page */
   body {
@@ -72,7 +72,7 @@
 </head>
 <body>
 
-<h1>ParaMemo 1.1.2 Beta</h1>
+<h1>ParaMemo 1.1.3</h1>
 <br>
 <p>By Ayush Gudipati <a href="https://github.com/ayushgudipati/ParaMemo">Link to Source Code</a></p>
 <div id="console"></div>
@@ -96,9 +96,9 @@ function chunkWords(originalWords) {
   let i = 0;
   while (i < originalWords.length) {
     const word = originalWords[i];
-    if (word.length > 3 && i + 1 < originalWords.length) {
+    if (word.length <= 3 && i + 1 < originalWords.length) {
       chunks.push(word + " " + originalWords[i + 1]);
-      i += 2;
+      i += 2; // skip the next word since it's paired
     } else {
       chunks.push(word);
       i++;
