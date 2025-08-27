@@ -6,77 +6,116 @@
   <title>ParaMemo 1.1.9</title>
   <style>
     body {
-      background: #1E1F40;
+      background: linear-gradient(135deg, #1E1F40, #15162E);
       color: #FFFFFF;
       font-family: monospace;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 20px;
+      min-height: 100vh;
     }
-    h1 { font-size: 2.5rem; }
+    
+    h1 {
+      font-size: 2.8rem;
+      letter-spacing: 1px;
+      text-shadow: 0 0 8px rgba(171, 93, 206, 0.7);
+      margin-bottom: 10px;
+    }
+    
     #console {
       background: #0C0E1B;
       width: 90%;
-      max-width: 600px;
-      height: 400px;
+      max-width: 650px;
+      height: 420px;
       overflow-y: auto;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 10px;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 15px;
       white-space: normal;
-      font-size: 1.2rem;
+      font-size: 1.15rem;
+      line-height: 1.5rem;
+      box-shadow: 0 0 12px rgba(0,0,0,0.6), inset 0 0 8px rgba(171,93,206,0.3);
     }
+    
+    /* scrollbar tweaks */
+    #console::-webkit-scrollbar {
+      width: 8px;
+    }
+    #console::-webkit-scrollbar-thumb {
+      background: #AB5DCE;
+      border-radius: 4px;
+    }
+    #console::-webkit-scrollbar-track {
+      background: #15162E;
+    }
+    
     input[type="text"] {
       width: 90%;
-      max-width: 600px;
+      max-width: 650px;
       padding: 15px;
       font-family: monospace;
       font-size: 1.2rem;
-      border-radius: 5px;
-      border: none;
+      border-radius: 6px;
+      border: 1px solid #333;
+      outline: none;
+      transition: box-shadow 0.2s ease, transform 0.1s ease;
+    }
+    input[type="text"]:focus {
+      box-shadow: 0 0 10px rgba(171,93,206,0.8);
+      transform: scale(1.01);
     }
     input[type="text"].disabled {
-      background-color: #555;
+      background-color: #444;
       cursor: not-allowed;
     }
+    
     button {
-      margin-top: 10px;
-      padding: 10px 20px;
+      margin-top: 12px;
+      padding: 12px 24px;
       font-family: monospace;
       font-size: 1.2rem;
-      border-radius: 5px;
+      border-radius: 6px;
       border: none;
-      background: #AB5DCE;
+      background: linear-gradient(135deg, #AB5DCE, #7B3FA5);
       color: white;
       cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      transition: background 0.25s ease, transform 0.1s ease;
     }
-    button:hover { background: #FF69B4; }
-    button:disabled { background: #555; cursor: not-allowed; }
-    a:link {
-      color: white;
-      background-color: transparent;
-      text-decoration: none;
+    button:hover {
+      background: linear-gradient(135deg, #FF69B4, #AB5DCE);
+      transform: scale(1.03);
     }
-    a:visited {
-      color: white;
-      background-color: transparent;
+    button:disabled {
+      background: #555;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    
+    a {
+      color: #FFE082;
       text-decoration: none;
+      transition: text-shadow 0.2s ease;
     }
     a:hover {
-      color: white;
-      background-color: transparent;
-      text-decoration: underline;
+      text-shadow: 0 0 6px #FFE082;
     }
-    a:active {
-      color: white;
-      background-color: transparent;
-      text-decoration: none;
-    }
-
+    
     /* highlight styles */
-    .hl-new { background: #FFE082; color: #0C0E1B; padding: 0 3px; border-radius: 3px; font-weight: bold; }
-    .hl-wrong { background: #FF5252; color: white; padding: 0 2px; border-radius: 2px; }
+    .hl-new {
+      background: #FFE082;
+      color: #0C0E1B;
+      padding: 0 4px;
+      border-radius: 3px;
+      font-weight: bold;
+    }
+    .hl-wrong {
+      background: #FF5252;
+      color: white;
+      padding: 0 3px;
+      border-radius: 2px;
+    }
   </style>
 </head>
 <body>
