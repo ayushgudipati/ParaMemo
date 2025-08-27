@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ParaMemo 1.1.6</title>
+  <title>ParaMemo 1.1.7</title>
   <style>
     body {
       background: #1E1F40;
@@ -53,15 +53,6 @@
     }
     button:hover { background: #FF69B4; }
     button:disabled { background: #555; cursor: not-allowed; }
-
-    /* NEW: highlight style for the newest chunk */
-    .hl-new {
-      background: #FFE082;      /* soft amber */
-      color: #0C0E1B;           /* dark text for contrast */
-      padding: 0 3px;
-      border-radius: 3px;
-      font-weight: bold;
-    }
     a:link {
       color: white;
       background-color: transparent;
@@ -82,11 +73,15 @@
       background-color: transparent;
       text-decoration: none;
     }
+
+    /* highlight styles */
+    .hl-new { background: #FFE082; color: #0C0E1B; padding: 0 3px; border-radius: 3px; font-weight: bold; }
+    .hl-wrong { background: #FF5252; color: white; padding: 0 2px; border-radius: 2px; }
   </style>
 </head>
 <body>
 
-<h1>ParaMemo 1.1.6</h1>
+<h1>ParaMemo 1.1.7</h1>
 <br>
 <p>By Ayush Gudipati <a href="https://github.com/ayushgudipati/ParaMemo">Link to Source Code</a></p>
 <div id="console"></div>
@@ -104,12 +99,8 @@ let currentIndex = 1;
 let correctCount = 0;
 let state = 'inputParagraph';
 
-// --- helper: set placeholder text ---
-function setPlaceholder(msg) {
-  userInput.placeholder = msg;
-}
+function setPlaceholder(msg) { userInput.placeholder = msg; }
 
-// --- chunking function ---
 function chunkWords(originalWords) {
   const chunks = [];
   let i = 0;
@@ -130,63 +121,27 @@ function escapeHTML(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// regular (escaped) console append
 function appendConsole(msg = '', newline = true) {
   const safe = escapeHTML(msg);
   consoleDiv.innerHTML += newline ? (safe + '<br>') : (safe + ' ');
   consoleDiv.scrollTop = consoleDiv.scrollHeight;
 }
 
-// NEW: append pre-sanitized markup (we only insert our own tags)
 function appendConsoleHTML(markup = '', newline = true) {
   consoleDiv.innerHTML += newline ? (markup + '<br>') : (markup + ' ');
   consoleDiv.scrollTop = consoleDiv.scrollHeight;
 }
 
-function clearConsole() {
-  consoleDiv.innerHTML = '<br>'.repeat(40);
-}
+function clearConsole() { consoleDiv.innerHTML = '<br>'.repeat(40); }
 
-function norm(s) {
-  return s.toLowerCase().trim().replace(/\s+/g, ' ');
-}
+function norm(s) { return s.toLowerCase().trim().replace(/\s+/g, ' '); }
 
-function disableInput() {
-  userInput.disabled = true;
-  userInput.classList.add('disabled');
-}
+function disableInput() { userInput.disabled = true; userInput.classList.add('disabled'); }
+function enableInput() { userInput.disabled = false; userInput.classList.remove('disabled'); userInput.focus(); }
+function disableSubmit() { submitBtn.disabled = true; }
+function enableSubmit() { submitBtn.disabled = false; }
 
-function enableInput() {
-  userInput.disabled = false;
-  userInput.classList.remove('disabled');
-  userInput.focus();
-}
-
-function disableSubmit() {
-  submitBtn.disabled = true;
-}
-
-function enableSubmit() {
-  submitBtn.disabled = false;
-}
-
-// --- restore showWords helper (animated reveal) ---
-function showWords(wordsToShow, callback) {
-  let i = 0;
-  function showNext() {
-    if (i < wordsToShow.length) {
-      appendConsole(wordsToShow[i], false);
-      i++;
-      setTimeout(showNext, 400);
-    } else {
-      appendConsole('');
-      callback();
-    }
-  }
-  showNext();
-}
-
-// NEW: render chunks with the newest chunk highlighted
+// highlight new chunk
 function renderChunks(chunks, newIdx) {
   return chunks.map((chunk, idx) => {
     const safe = escapeHTML(chunk);
@@ -197,26 +152,44 @@ function renderChunks(chunks, newIdx) {
   }).join(' ');
 }
 
+// highlight incorrect differences between correct & user input
+function highlightDiff(correct, attempt) {
+  const correctWords = correct.split(/\s+/);
+  const attemptWords = attempt.split(/\s+/);
+  const maxLen = Math.max(correctWords.length, attemptWords.length);
+  let out = [];
+
+  for (let i = 0; i < maxLen; i++) {
+    const c = correctWords[i] || '';
+    const a = attemptWords[i] || '';
+    if (!a) {
+      out.push(`<span class="hl-wrong">(missing: ${escapeHTML(c)})</span>`);
+    } else if (!c) {
+      out.push(`<span class="hl-wrong">(extra: ${escapeHTML(a)})</span>`);
+    } else if (norm(c) === norm(a)) {
+      out.push(escapeHTML(a));
+    } else {
+      out.push(`<span class="hl-wrong">${escapeHTML(a)}</span>`);
+    }
+  }
+  return out.join(' ');
+}
+
 function practiceStep() {
-  disableInput();
-  disableSubmit();
-  
+  disableInput(); disableSubmit();
   const shownWords = words.slice(0, currentIndex);
   const wordCount = shownWords.reduce((acc, chunk) => acc + chunk.split(/\s+/).length, 0);
 
   clearConsole();
   appendConsole(`Memorize the first ${currentIndex} chunks (${wordCount} words):`);
-  // highlight the newest chunk (index currentIndex - 1)
-  const highlighted = renderChunks(shownWords, currentIndex - 1);
-  appendConsoleHTML(highlighted);
+  appendConsoleHTML(renderChunks(shownWords, currentIndex - 1));
 
   setTimeout(() => {
     clearConsole();
     appendConsole(`Type the first ${currentIndex} chunks (${wordCount} words) and press Submit:`);
     setPlaceholder("Type the memorized chunks here...");
     state = 'waitingPracticeInput';
-    enableInput();
-    enableSubmit();
+    enableInput(); enableSubmit();
   }, 2000);
 }
 
@@ -225,13 +198,11 @@ function finalScoreStep() {
   appendConsole('Now enter the full paragraph and press Submit:');
   setPlaceholder("Type the full paragraph here...");
   state = 'waitingFinalInput';
-  enableInput();
-  enableSubmit();
+  enableInput(); enableSubmit();
 }
 
 submitBtn.addEventListener('click', () => {
-  disableInput();
-  disableSubmit();
+  disableInput(); disableSubmit();
   const input = userInput.value;
   userInput.value = '';
 
@@ -245,8 +216,7 @@ submitBtn.addEventListener('click', () => {
     const shown = words.slice(0, currentIndex).join(' ');
     if (norm(input) === norm(shown)) {
       appendConsole('✅ Correct!');
-      correctCount++;
-      currentIndex++;
+      correctCount++; currentIndex++;
       if (currentIndex <= words.length) {
         setTimeout(practiceStep, 700);
       } else {
@@ -254,32 +224,30 @@ submitBtn.addEventListener('click', () => {
         finalScoreStep();
       }
     } else {
-      appendConsole('❌ Wrong! Try again.');
+      appendConsole('❌ Wrong! Compare your attempt:');
+      appendConsoleHTML(highlightDiff(shown, input));
       setPlaceholder("Type the memorized chunks here...");
-      setTimeout(practiceStep, 700);
+      setTimeout(practiceStep, 2000);
     }
   }
   else if (state === 'waitingFinalInput') {
     if (norm(input) === norm(text)) {
       appendConsole(`🎉 Final Score: ${correctCount}/${words.length} chunks (${((correctCount/words.length)*100).toFixed(1)}%)`);
       appendConsole('You memorized it perfectly!');
-      enableInput();
-      enableSubmit();
+      enableInput(); enableSubmit();
     } else {
       appendConsole('❌ Incorrect. You can retry the paragraph or redo practice.');
       appendConsole('Type 1 to retry final input, 2 to redo practice, then press Submit:');
       setPlaceholder("Enter 1 (retry) or 2 (redo practice)");
       state = 'finalScoreChoice';
-      enableInput();
-      enableSubmit();
+      enableInput(); enableSubmit();
     }
   }
   else if (state === 'finalScoreChoice') {
     if (input.trim() === '1') {
       finalScoreStep();
     } else if (input.trim() === '2') {
-      currentIndex = 1;
-      correctCount = 0;
+      currentIndex = 1; correctCount = 0;
       practiceStep();
     } else {
       appendConsole('Invalid choice, defaulting to retry final input.');
@@ -288,15 +256,11 @@ submitBtn.addEventListener('click', () => {
   }
 });
 
-userInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') submitBtn.click();
-});
+userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') submitBtn.click(); });
 
 appendConsole('Paste your paragraph in the input below and press Submit to begin.');
 setPlaceholder("Paste your paragraph, then press Submit");
-enableInput();
-enableSubmit();
+enableInput(); enableSubmit();
 </script>
-
 </body>
 </html>
