@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ParaMemo 1.1.12</title>
+  <title>ParaMemo 1.1.13</title>
   <style>
     body {
       background: linear-gradient(135deg, #1E1F40, #15162E);
@@ -35,7 +35,7 @@
       width: 90%;
       max-width: 650px;
       height: 420px;
-      overflow: hidden; /* 🔒 lock scrolling completely */
+      overflow: hidden;
       padding: 20px;
       border-radius: 10px;
       margin-bottom: 8px;
@@ -45,7 +45,6 @@
       box-shadow: 0 0 12px rgba(0,0,0,0.6), inset 0 0 8px rgba(171,93,206,0.3);
     }
     
-    /* Progress display */
     #progress {
       margin-bottom: 15px;
       font-size: 1rem;
@@ -104,7 +103,6 @@
       text-shadow: 0 0 6px #FFE082;
     }
     
-    /* highlight styles */
     .hl-new {
       background: #FFE082;
       color: #0C0E1B;
@@ -122,7 +120,7 @@
 </head>
 <body>
 
-<h1>ParaMemo 1.1.12</h1>
+<h1>ParaMemo 1.1.13</h1>
 <br>
 <p>By Ayush Gudipati <a href="https://github.com/ayushgudipati/ParaMemo">Link to Source Code</a></p>
 <div id="console"></div>
@@ -180,7 +178,11 @@ function appendConsoleHTML(markup = '', newline = true) {
   consoleDiv.innerHTML += newline ? (markup + '<br>') : (markup + ' ');
 }
 
-function clearConsole() { consoleDiv.innerHTML = '<br>'.repeat(40); }
+function clearConsole(keep = false) { 
+  if (!keep) {
+    consoleDiv.innerHTML = '<br>'.repeat(40); 
+  }
+}
 
 function norm(s) { return s.toLowerCase().trim().replace(/\s+/g, ' '); }
 
@@ -189,15 +191,13 @@ function enableInput() { userInput.disabled = false; userInput.classList.remove(
 function disableSubmit() { submitBtn.disabled = true; }
 function enableSubmit() { submitBtn.disabled = false; }
 
-// visual flash for feedback
 function flashInput(correct) {
   userInput.style.boxShadow = correct 
-    ? "0 0 16px 4px #00FF00"  // 🌟 brighter neon green
+    ? "0 0 16px 4px #00FF00"
     : "0 0 12px #FF5252";
   setTimeout(() => userInput.style.boxShadow = "", 700);
 }
 
-// update progress
 function updateProgress() {
   if (words.length > 0) {
     progressDiv.textContent = `Progress: ${Math.min(currentIndex-1, words.length)} / ${words.length} chunks`;
@@ -206,7 +206,6 @@ function updateProgress() {
   }
 }
 
-// highlight new chunk
 function renderChunks(chunks, newIdx) {
   return chunks.map((chunk, idx) => {
     const safe = escapeHTML(chunk);
@@ -217,7 +216,6 @@ function renderChunks(chunks, newIdx) {
   }).join(' ');
 }
 
-// highlight incorrect differences between correct & user input
 function highlightDiff(correct, attempt) {
   const correctWords = correct.split(/\s+/);
   const attemptWords = attempt.split(/\s+/);
@@ -305,6 +303,7 @@ submitBtn.addEventListener('click', () => {
   }
   else if (state === 'waitingFinalInput') {
     if (norm(input) === norm(text)) {
+      clearConsole(true); // ✅ keep history
       appendConsole(`🎉 Final Score: ${correctCount}/${words.length} chunks (${((correctCount/words.length)*100).toFixed(1)}%)`);
       appendConsole('You memorized it perfectly!');
       flashInput(true);
