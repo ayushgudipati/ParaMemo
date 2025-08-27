@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ParaMemo 1.1.11</title>
+  <title>ParaMemo 1.1.12</title>
   <style>
     body {
       background: linear-gradient(135deg, #1E1F40, #15162E);
@@ -35,7 +35,7 @@
       width: 90%;
       max-width: 650px;
       height: 420px;
-      overflow-y: auto;
+      overflow: hidden; /* 🔒 lock scrolling completely */
       padding: 20px;
       border-radius: 10px;
       margin-bottom: 8px;
@@ -52,18 +52,6 @@
       color: #FFE082;
     }
 
-    /* scrollbar tweaks */
-    #console::-webkit-scrollbar {
-      width: 8px;
-    }
-    #console::-webkit-scrollbar-thumb {
-      background: #AB5DCE;
-      border-radius: 4px;
-    }
-    #console::-webkit-scrollbar-track {
-      background: #15162E;
-    }
-    
     input[type="text"] {
       width: 90%;
       max-width: 650px;
@@ -134,7 +122,7 @@
 </head>
 <body>
 
-<h1>ParaMemo 1.1.11</h1>
+<h1>ParaMemo 1.1.12</h1>
 <br>
 <p>By Ayush Gudipati <a href="https://github.com/ayushgudipati/ParaMemo">Link to Source Code</a></p>
 <div id="console"></div>
@@ -144,12 +132,11 @@
 
 <script>
 const config = {
-  baseDisplayTime: 1000,      // how long chunks stay visible before input phase (ms)
-  wordIncrement: 75,          // add this per word shown (ms)
-  correctPause: 500,          // pause after correct answer (ms)
-  mistakePause: 2000          // pause after mistake (ms)
+  baseDisplayTime: 1000,
+  wordIncrement: 75,
+  correctPause: 500,
+  mistakePause: 2000
 };
-// =====================
 
 const consoleDiv = document.getElementById('console');
 const userInput   = document.getElementById('userInput');
@@ -187,12 +174,10 @@ function escapeHTML(s) {
 function appendConsole(msg = '', newline = true) {
   const safe = escapeHTML(msg);
   consoleDiv.innerHTML += newline ? (safe + '<br>') : (safe + ' ');
-  consoleDiv.scrollTop = consoleDiv.scrollHeight;
 }
 
 function appendConsoleHTML(markup = '', newline = true) {
   consoleDiv.innerHTML += newline ? (markup + '<br>') : (markup + ' ');
-  consoleDiv.scrollTop = consoleDiv.scrollHeight;
 }
 
 function clearConsole() { consoleDiv.innerHTML = '<br>'.repeat(40); }
@@ -206,8 +191,10 @@ function enableSubmit() { submitBtn.disabled = false; }
 
 // visual flash for feedback
 function flashInput(correct) {
-  userInput.style.boxShadow = correct ? "0 0 12px #4CAF50" : "0 0 12px #FF5252";
-  setTimeout(() => userInput.style.boxShadow = "", 600);
+  userInput.style.boxShadow = correct 
+    ? "0 0 16px 4px #00FF00"  // 🌟 brighter neon green
+    : "0 0 12px #FF5252";
+  setTimeout(() => userInput.style.boxShadow = "", 700);
 }
 
 // update progress
@@ -263,7 +250,6 @@ function practiceStep() {
   appendConsoleHTML(renderChunks(shownWords, currentIndex - 1));
   updateProgress();
 
-  // dynamic timing based on # of words
   const displayTime = config.baseDisplayTime + (wordCount * config.wordIncrement);
 
   setTimeout(() => {
