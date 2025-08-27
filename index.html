@@ -1,78 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ParaMemo 1.1.4</title>
-<style>
-  /* Base styles for the entire page */
-  body {
-    background: #1E1F40;
-    color: #FFFFFF;
-    font-family: monospace;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
-  
-  /* Styling for the main heading */
-  h1 {
-    font-size: 2.5rem;
-  }
-  
-  /* Styles for the console display area */
-  #console {
-    background: #0C0E1B;
-    width: 90%;
-    max-width: 600px;
-    height: 400px;
-    overflow-y: auto;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    white-space: normal;
-    font-size: 1.2rem;
-  }
-  
-  input[type="text"] {
-    width: 90%;
-    max-width: 600px;
-    padding: 15px;
-    font-family: monospace;
-    font-size: 1.2rem;
-    border-radius: 5px;
-    border: none;
-  }
-  
-  input[type="text"].disabled {
-    background-color: #555;
-    cursor: not-allowed;
-  }
-  
-  button {
-    margin-top: 10px;
-    padding: 10px 20px;
-    font-family: monospace;
-    font-size: 1.2rem;
-    border-radius: 5px;
-    border: none;
-    background: #AB5DCE;
-    color: white;
-    cursor: pointer;
-  }
-  
-  button:hover { background: #FF69B4; }
-  
-  button:disabled {
-    background: #555;
-    cursor: not-allowed;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ParaMemo 1.1.5</title>
+  <style>
+    body {
+      background: #1E1F40;
+      color: #FFFFFF;
+      font-family: monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    h1 { font-size: 2.5rem; }
+    #console {
+      background: #0C0E1B;
+      width: 90%;
+      max-width: 600px;
+      height: 400px;
+      overflow-y: auto;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      white-space: normal;
+      font-size: 1.2rem;
+    }
+    input[type="text"] {
+      width: 90%;
+      max-width: 600px;
+      padding: 15px;
+      font-family: monospace;
+      font-size: 1.2rem;
+      border-radius: 5px;
+      border: none;
+    }
+    input[type="text"].disabled {
+      background-color: #555;
+      cursor: not-allowed;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-family: monospace;
+      font-size: 1.2rem;
+      border-radius: 5px;
+      border: none;
+      background: #AB5DCE;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover { background: #FF69B4; }
+    button:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+  </style>
 </head>
 <body>
 
-<h1>ParaMemo 1.1.4</h1>
+<h1>ParaMemo 1.1.5</h1>
 <br>
 <p>By Ayush Gudipati <a href="https://github.com/ayushgudipati/ParaMemo">Link to Source Code</a></p>
 <div id="console"></div>
@@ -90,7 +78,12 @@ let currentIndex = 1;
 let correctCount = 0;
 let state = 'inputParagraph';
 
-// --- NEW: chunking function ---
+// --- helper: set placeholder text ---
+function setPlaceholder(msg) {
+  userInput.placeholder = msg;
+}
+
+// --- chunking function ---
 function chunkWords(originalWords) {
   const chunks = [];
   let i = 0;
@@ -98,7 +91,7 @@ function chunkWords(originalWords) {
     const word = originalWords[i];
     if (word.length <= 3 && i + 1 < originalWords.length) {
       chunks.push(word + " " + originalWords[i + 1]);
-      i += 2; // skip the next word since it's paired
+      i += 2;
     } else {
       chunks.push(word);
       i++;
@@ -144,6 +137,7 @@ function enableSubmit() {
   submitBtn.disabled = false;
 }
 
+// --- restore showWords helper (animated reveal) ---
 function showWords(wordsToShow, callback) {
   let i = 0;
   function showNext() {
@@ -164,8 +158,6 @@ function practiceStep() {
   disableSubmit();
   
   const shownWords = words.slice(0, currentIndex);
-
-  // count actual words inside chunks
   const wordCount = shownWords.reduce((acc, chunk) => acc + chunk.split(/\s+/).length, 0);
 
   clearConsole();
@@ -175,6 +167,7 @@ function practiceStep() {
   setTimeout(() => {
     clearConsole();
     appendConsole(`Type the first ${currentIndex} chunks (${wordCount} words) and press Submit:`);
+    setPlaceholder("Type the memorized chunks here...");
     state = 'waitingPracticeInput';
     enableInput();
     enableSubmit();
@@ -184,6 +177,7 @@ function practiceStep() {
 function finalScoreStep() {
   clearConsole();
   appendConsole('Now enter the full paragraph and press Submit:');
+  setPlaceholder("Type the full paragraph here...");
   state = 'waitingFinalInput';
   enableInput();
   enableSubmit();
@@ -197,7 +191,7 @@ submitBtn.addEventListener('click', () => {
 
   if (state === 'inputParagraph') {
     text  = input;
-    words = chunkWords(text.trim().split(/\s+/)); // <-- USE CHUNKING
+    words = chunkWords(text.trim().split(/\s+/));
     appendConsole('Paragraph saved. Starting practice...');
     practiceStep();
   }
@@ -215,6 +209,7 @@ submitBtn.addEventListener('click', () => {
       }
     } else {
       appendConsole('❌ Wrong! Try again.');
+      setPlaceholder("Type the memorized chunks here...");
       setTimeout(practiceStep, 700);
     }
   }
@@ -227,6 +222,7 @@ submitBtn.addEventListener('click', () => {
     } else {
       appendConsole('❌ Incorrect. You can retry the paragraph or redo practice.');
       appendConsole('Type 1 to retry final input, 2 to redo practice, then press Submit:');
+      setPlaceholder("Enter 1 (retry) or 2 (redo practice)");
       state = 'finalScoreChoice';
       enableInput();
       enableSubmit();
@@ -251,6 +247,7 @@ userInput.addEventListener('keypress', (e) => {
 });
 
 appendConsole('Paste your paragraph in the input below and press Submit to begin.');
+setPlaceholder("Paste your paragraph, then press Submit");
 enableInput();
 enableSubmit();
 </script>
