@@ -7,9 +7,12 @@ ParaMemo is a minimalist web application designed to help users improve their me
 
 ## Key Features
 - **Interactive Practice**: Guides you to memorize paragraphs by section.  
-- **Structured Feedback**: Provides immediate feedback (correct/incorrect) on your progress.  
+- **Structured Feedback**: Highlights correct and incorrect attempts with color-coded feedback.  
 - **Intuitive UI**: Disables the input field and submit button when the program is "thinking" to prevent accidental input.  
 - **Progressive Memorization**: A step-by-step approach that helps you build confidence and retain information.  
+- **Chunk Highlighting**: Highlights the current chunk to focus on during memorization.  
+- **Error Details**: Shows missing, extra, or incorrect words to help you pinpoint mistakes.  
+- **Flexible Retry Options**: Allows retrying the final paragraph or redoing the practice from the beginning.  
 
 ## How to Use
 1. Paste a paragraph into the text box and press **Submit**.  
@@ -17,6 +20,8 @@ ParaMemo is a minimalist web application designed to help users improve their me
 3. When prompted, type the words you memorized and press **Submit** again.  
 4. Repeat this process as the app gradually adds more words to the section you need to recall.  
 5. After the practice is complete, you will be asked to type the entire paragraph to test your final recall.  
+6. If needed, choose to retry the final input or redo the practice to improve your score.  
+
 
 ## Contribution
 ParaMemo is an open-source project. If you encounter any bugs or have suggestions for new features, please submit an issue or a pull request on the [GitHub repository](https://github.com/ayushgudipati/ParaMemo).
