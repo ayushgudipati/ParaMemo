@@ -15,7 +15,7 @@ body {
   justify-content: center;
   background: linear-gradient(135deg, 
     #1E1F40,   /* Deep Indigo */
-    #4DA6FF,   /* Bright Cerulean */
+    #2E8FF0,   /* Bright Cerulean */
     #AB5DCE,   /* Vivid Amethyst */
     #2E2F70    /* Softened deep purple-blue for extra depth */
   );
@@ -43,7 +43,7 @@ h1 {
   padding: 20px;
   overflow-y: auto;
   border-radius: 20px;
-  background: rgba(30, 31, 64, 0.25); /* glassy effect */
+  background: rgba(30, 31, 64, 0.15); /* glassy effect */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   color: #fff;
@@ -104,16 +104,18 @@ input[type="text"].disabled {
 }
 
 .input-wrapper {
+  position: relative;
   display: inline-block;
-  padding: 3px; /* thickness of border */
+  padding: 4px; /* thickness of border */
   border-radius: 16px; /* matches input rounding */
   background: linear-gradient(270deg, #AB5DCE, #FF69B4, #4DA6FF, #FFD166, #AB5DCE);
   background-size: 400% 400%;
   animation: spinBorder 6s linear infinite; /* spinning effect */
+  z-index: 2; /* make wrapper above console */
 }
-
+    
 .input-wrapper input[type="text"] {
-  width: 90%;
+  width: 100%;
   max-width: 650px;
   padding: 15px;
   font-family: monospace;
@@ -124,8 +126,10 @@ input[type="text"].disabled {
   color: #000;
   outline: none;
   transition: box-shadow 0.2s ease, transform 0.1s ease;
+  position: relative;
+  z-index: 3; /* input sits above wrapper, but wrapper border is visible around */
 }
-
+    
 @keyframes spinBorder {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -142,7 +146,7 @@ input[type="text"].disabled {
   color: #777;
   cursor: not-allowed;
 }
-
+    
 button {
   margin-top: 12px;
   padding: 12px 24px;
