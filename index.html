@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ParaMemo 1.2.10</title>
+  <title>ParaMemo 1.2.11</title>
   <style>
 body {
   margin: 0;
@@ -79,8 +79,8 @@ h1 {
 .input-wrapper {
   position: relative;
   display: inline-block;
-  padding: 6px 10px; /* top/bottom 6px, left/right 10px for thicker side border */
-  border-radius: 20px; /* slightly larger than input */
+  border-radius: 20px;
+  padding: 6px; /* uniform padding */
   background: linear-gradient(
     270deg,
     #AB5DCE,
@@ -91,23 +91,22 @@ h1 {
   );
   background-size: 400% 400%;
   animation: spinBorder 6s linear infinite;
-  z-index: 2;
 }
 
 .input-wrapper input[type="text"] {
-  width: calc(100% - 4px); /* shrink a tiny bit so side borders remain visible */
+  display: block;
+  width: 100%; 
   max-width: 650px;
-  padding: 15px;
+  padding: 15px 20px; /* more side padding = visually thicker side border */
   font-family: monospace;
   font-size: 1.2rem;
   border: none;
-  border-radius: 14px;
+  border-radius: 14px; /* slightly smaller than wrapper */
   background: #fff;
   color: #000;
   outline: none;
   transition: box-shadow 0.2s ease, transform 0.1s ease;
-  position: relative;
-  z-index: 3;
+  box-sizing: border-box; /* ensures padding doesn’t push past wrapper */
 }
 
 @keyframes spinBorder {
@@ -194,7 +193,7 @@ a:hover {
 </head>
 <body>
 
-<h1>ParaMemo 1.2.10</h1>
+<h1>ParaMemo 1.2.11</h1>
 <br>
 <p>© 2025 Ayush Gudipati <a href="https://github.com/ayushgudipati/ParaMemo">Link to Source Code</a></p>
 <div id="console"></div>
