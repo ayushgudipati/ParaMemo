@@ -14,10 +14,10 @@ body {
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, 
-    #1E1F40,   /* Deep Indigo */
-    #2E8FF0,   /* Bright Cerulean */
-    #AB5DCE,   /* Vivid Amethyst */
-    #2E2F70    /* Softened deep purple-blue for extra depth */
+    #1E1F40 0%,   /* Deep Indigo */
+    #2E8FF0 25%,  /* Bright Cerulean */
+    #AB5DCE 50%,  /* Vivid Amethyst */
+    #2E2F70 100%  /* Soft Purple-Blue */
   );
   background-size: 300% 300%;
   animation: gradientShift 15s ease infinite;
@@ -76,6 +76,57 @@ h1 {
   color: #FFE082;
 }
 
+.input-wrapper {
+  position: relative;
+  display: inline-block;
+  padding: 5px; /* border thickness */
+  border-radius: 18px; /* slightly larger than input */
+  background: linear-gradient(
+    270deg,
+    #AB5DCE,
+    #FF69B4,
+    #4DA6FF,
+    #FFD166,
+    #AB5DCE
+  );
+  background-size: 400% 400%;
+  animation: spinBorder 6s linear infinite; /* spinning effect */
+  z-index: 2; /* above console */
+}
+
+.input-wrapper input[type="text"] {
+  width: 100%;
+  max-width: 650px;
+  padding: 15px;
+  font-family: monospace;
+  font-size: 1.2rem;
+  border: none; /* no default border */
+  border-radius: 14px; /* slightly smaller than wrapper */
+  background: #fff; /* solid white */
+  color: #000;
+  outline: none;
+  transition: box-shadow 0.2s ease, transform 0.1s ease;
+  position: relative;
+  z-index: 3; /* ensures it's above the border layer */
+}
+
+@keyframes spinBorder {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.input-wrapper input[type="text"]:focus {
+  box-shadow: 0 0 14px rgba(171, 93, 206, 0.8);
+  transform: scale(1.02);
+}
+
+.input-wrapper input[type="text"].disabled {
+  background: #222;
+  color: #777;
+  cursor: not-allowed;
+} 
+
 input[type="text"] {
   width: 90%;
   max-width: 650px;
@@ -100,50 +151,6 @@ input[type="text"].disabled {
   background: #222;
   color: #777;
   border-color: #444;
-  cursor: not-allowed;
-}
-
-.input-wrapper {
-  position: relative;
-  display: inline-block;
-  padding: 4px; /* thickness of border */
-  border-radius: 16px; /* matches input rounding */
-  background: linear-gradient(270deg, #AB5DCE, #FF69B4, #4DA6FF, #FFD166, #AB5DCE);
-  background-size: 400% 400%;
-  animation: spinBorder 6s linear infinite; /* spinning effect */
-  z-index: 2; /* make wrapper above console */
-}
-    
-.input-wrapper input[type="text"] {
-  width: 100%;
-  max-width: 650px;
-  padding: 15px;
-  font-family: monospace;
-  font-size: 1.2rem;
-  border: none; /* remove default border */
-  border-radius: 12px; /* inside rounding */
-  background: #fdfdfd; /* near-white background */
-  color: #000;
-  outline: none;
-  transition: box-shadow 0.2s ease, transform 0.1s ease;
-  position: relative;
-  z-index: 3; /* input sits above wrapper, but wrapper border is visible around */
-}
-    
-@keyframes spinBorder {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.input-wrapper input[type="text"]:focus {
-  box-shadow: 0 0 14px rgba(171, 93, 206, 0.8);
-  transform: scale(1.02);
-}
-
-.input-wrapper input[type="text"].disabled {
-  background: #222;
-  color: #777;
   cursor: not-allowed;
 }
     
