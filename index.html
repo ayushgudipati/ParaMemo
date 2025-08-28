@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ParaMemo 1.2.8</title>
+  <title>ParaMemo 1.2.9</title>
   <style>
 body {
   margin: 0;
@@ -92,11 +92,13 @@ h1 {
   background-size: 400% 400%;
   animation: spinBorder 6s linear infinite; /* spinning effect */
   z-index: 2; /* above console */
+  box-sizing: border-box; /* include padding in size */
 }
 
 .input-wrapper input[type="text"] {
-  width: 100%;
-  max-width: 650px;
+  display: block; /* makes width behave correctly */
+  width: 100%; /* fits wrapper */
+  max-width: 640px; /* keep it inside border */
   padding: 15px;
   font-family: monospace;
   font-size: 1.2rem;
@@ -108,6 +110,7 @@ h1 {
   transition: box-shadow 0.2s ease, transform 0.1s ease;
   position: relative;
   z-index: 3; /* ensures it's above the border layer */
+  box-sizing: border-box; /* fixes overflow issue */
 }
 
 @keyframes spinBorder {
@@ -125,35 +128,7 @@ h1 {
   background: #222;
   color: #777;
   cursor: not-allowed;
-} 
-/*
-input[type="text"] {
-  width: 90%;
-  max-width: 650px;
-  padding: 15px;
-  font-family: monospace;
-  font-size: 1.2rem;
-  border-radius: 12px;
-  border: 2px solid transparent;
-  background: #fdfdfd;
-  color: #000;
-  outline: none;
-  transition: box-shadow 0.2s ease, transform 0.1s ease, border 0.3s ease;
-  border-image: linear-gradient(45deg, #AB5DCE, #FF69B4, #4DA6FF, #FFD166) 1;
 }
-
-input[type="text"]:focus {
-  box-shadow: 0 0 14px rgba(171, 93, 206, 0.8);
-  transform: scale(1.02);
-}
-
-input[type="text"].disabled {
-  background: #222;
-  color: #777;
-  border-color: #444;
-  cursor: not-allowed;
-}
-*/
     
 button {
   margin-top: 12px;
@@ -222,7 +197,7 @@ a:hover {
 </head>
 <body>
 
-<h1>ParaMemo 1.2.8</h1>
+<h1>ParaMemo 1.2.9</h1>
 <br>
 <p>© 2025 Ayush Gudipati <a href="https://github.com/ayushgudipati/ParaMemo">Link to Source Code</a></p>
 <div id="console"></div>
