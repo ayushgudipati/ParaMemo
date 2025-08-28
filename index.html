@@ -103,6 +103,46 @@ input[type="text"].disabled {
   cursor: not-allowed;
 }
 
+.input-wrapper {
+  display: inline-block;
+  padding: 3px; /* thickness of border */
+  border-radius: 16px; /* matches input rounding */
+  background: linear-gradient(270deg, #AB5DCE, #FF69B4, #4DA6FF, #FFD166, #AB5DCE);
+  background-size: 400% 400%;
+  animation: spinBorder 6s linear infinite; /* spinning effect */
+}
+
+.input-wrapper input[type="text"] {
+  width: 90%;
+  max-width: 650px;
+  padding: 15px;
+  font-family: monospace;
+  font-size: 1.2rem;
+  border: none; /* remove default border */
+  border-radius: 12px; /* inside rounding */
+  background: #fdfdfd; /* near-white background */
+  color: #000;
+  outline: none;
+  transition: box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+@keyframes spinBorder {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.input-wrapper input[type="text"]:focus {
+  box-shadow: 0 0 14px rgba(171, 93, 206, 0.8);
+  transform: scale(1.02);
+}
+
+.input-wrapper input[type="text"].disabled {
+  background: #222;
+  color: #777;
+  cursor: not-allowed;
+}
+
 button {
   margin-top: 12px;
   padding: 12px 24px;
@@ -166,7 +206,6 @@ a:hover {
       0 0 28px rgba(171, 93, 206, 0.35);
     border-color: rgba(173, 216, 230, 0.35);
   }
-
   </style>
 </head>
 <body>
@@ -176,7 +215,9 @@ a:hover {
 <p>© 2025 Ayush Gudipati <a href="https://github.com/ayushgudipati/ParaMemo">Link to Source Code</a></p>
 <div id="console"></div>
 <div id="progress"></div>
-<input type="text" id="userInput" placeholder="Paste your paragraph, then press Submit" autofocus />
+<div class="input-wrapper">
+  <input type="text" id="userInput" placeholder="Paste your paragraph, then press Submit" autofocus />
+</div>
 <button id="submitBtn">Submit</button>
 
 <script>
