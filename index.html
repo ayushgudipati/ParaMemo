@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ParaMemo 1.2.9</title>
+  <title>ParaMemo 1.2.10</title>
   <style>
 body {
   margin: 0;
@@ -79,8 +79,8 @@ h1 {
 .input-wrapper {
   position: relative;
   display: inline-block;
-  padding: 5px; /* border thickness */
-  border-radius: 18px; /* slightly larger than input */
+  padding: 6px 10px; /* top/bottom 6px, left/right 10px for thicker side border */
+  border-radius: 20px; /* slightly larger than input */
   background: linear-gradient(
     270deg,
     #AB5DCE,
@@ -90,27 +90,24 @@ h1 {
     #AB5DCE
   );
   background-size: 400% 400%;
-  animation: spinBorder 6s linear infinite; /* spinning effect */
-  z-index: 2; /* above console */
-  box-sizing: border-box; /* include padding in size */
+  animation: spinBorder 6s linear infinite;
+  z-index: 2;
 }
 
 .input-wrapper input[type="text"] {
-  display: block; /* makes width behave correctly */
-  width: 100%; /* fits wrapper */
-  max-width: 640px; /* keep it inside border */
+  width: calc(100% - 4px); /* shrink a tiny bit so side borders remain visible */
+  max-width: 650px;
   padding: 15px;
   font-family: monospace;
   font-size: 1.2rem;
-  border: none; /* no default border */
-  border-radius: 14px; /* slightly smaller than wrapper */
-  background: #fff; /* solid white */
+  border: none;
+  border-radius: 14px;
+  background: #fff;
   color: #000;
   outline: none;
   transition: box-shadow 0.2s ease, transform 0.1s ease;
   position: relative;
-  z-index: 3; /* ensures it's above the border layer */
-  box-sizing: border-box; /* fixes overflow issue */
+  z-index: 3;
 }
 
 @keyframes spinBorder {
@@ -197,7 +194,7 @@ a:hover {
 </head>
 <body>
 
-<h1>ParaMemo 1.2.9</h1>
+<h1>ParaMemo 1.2.10</h1>
 <br>
 <p>© 2025 Ayush Gudipati <a href="https://github.com/ayushgudipati/ParaMemo">Link to Source Code</a></p>
 <div id="console"></div>
