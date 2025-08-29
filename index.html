@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ParaMemo 1.2.15</title>
+  <title>ParaMemo 1.2.16</title>
   <style>
 
 body {
@@ -56,21 +56,58 @@ h1 {
   padding: 20px;
   overflow-y: auto;
   border-radius: 20px;
-  background: rgba(30, 31, 64, 0.15); /* glassy effect */
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  position: relative;
+  overflow: hidden;
+  
+  /* Glassmorphic base */
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  /* Borders and shadows for depth */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+
   color: #fff;
   margin-bottom: 15px;
-
-  /* subtle glow border + softer shadow */
-  border: 1px solid rgba(173, 216, 230, 0.25);
-  box-shadow: 
-    0 6px 20px rgba(0, 0, 0, 0.25),
-    0 0 10px rgba(77, 166, 255, 0.35),
-    0 0 20px rgba(171, 93, 206, 0.25);
   animation: neonPulse 4s infinite alternate;
 }
 
+/* Top shimmer line */
+#console::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.7),
+    transparent
+  );
+}
+
+/* Left shimmer line */
+#console::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.7),
+    transparent,
+    rgba(255, 255, 255, 0.2)
+  );
+}
+    
 /* scrollbar tweaks */
 #console::-webkit-scrollbar {
   width: 8px;
@@ -206,7 +243,7 @@ a:hover {
 </head>
 <body>
 
-<h1>ParaMemo 1.2.15</h1>
+<h1>ParaMemo 1.2.16</h1>
 <br>
 <p>© 2025 Ayush Gudipati <a href="https://github.com/ayushgudipati/ParaMemo">Link to Source Code</a></p>
 <div id="console"></div>
