@@ -219,12 +219,22 @@ p a:hover {
 
 /* highlight styles */
 .hl-new {
-  background: #FFE082;
+  background: linear-gradient(135deg, #FFD54F, #FFB300);
   color: #0C0E1B;
-  padding: 0 4px;
-  border-radius: 3px;
+  padding: 0 6px;
+  border-radius: 6px;
   font-weight: bold;
+  box-shadow: 0 0 10px rgba(255, 213, 79, 0.8), 
+              0 0 20px rgba(255, 179, 0, 0.6);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
+.hl-new:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 213, 79, 1), 
+              0 0 30px rgba(255, 179, 0, 0.9);
+}
+
 .hl-wrong {
   background: #FF5252;
   color: white;
@@ -267,7 +277,8 @@ const config = {
   baseDisplayTime: 1000,
   wordIncrement: 75,
   correctPause: 500,
-  mistakePause: 2000
+  mistakePause: 2000,
+  highlightFade: 2000 // ms before highlight fades
 };
 
 const consoleDiv = document.getElementById('console');
@@ -352,10 +363,27 @@ function practiceStep() {
   disableInput(); disableSubmit();
   const shownWords = words.slice(0, currentIndex);
   const wordCount = shownWords.reduce((acc, chunk) => acc + chunk.split(/\s+/).length, 0);
+
   clearConsole();
   appendConsole(`Memorize the first ${currentIndex} chunks (${wordCount} words):`);
-  appendConsoleHTML(renderChunks(shownWords, currentIndex - 1));
+
+  // render with highlight
+  consoleDiv.innerHTML += renderChunks(shownWords, currentIndex - 1) + "<br>";
+  consoleDiv.scrollTop = consoleDiv.scrollHeight;
+
+  // fade highlight back to normal after X ms
+  setTimeout(() => {
+    const span = consoleDiv.querySelector(".hl-new");
+    if (span) {
+      span.classList.add("fade-out");
+      setTimeout(() => {
+        span.classList.remove("hl-new", "fade-out");
+      }, 1000);
+    }
+  }, config.highlightFade);
+
   updateProgress();
+
   const displayTime = config.baseDisplayTime + (wordCount * config.wordIncrement);
   setTimeout(() => {
     clearConsole();
