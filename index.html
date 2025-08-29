@@ -410,7 +410,7 @@ submitBtn.addEventListener('click', () => {
     text = input;
   
     // Ask for chunk length
-    let chunkLenStr = prompt("Enter chunk length (words per chunk). Leave empty for default (2):");
+    let chunkLenStr = prompt("How many words per chunk? (Press Enter for default = 2)");
     let chunkLen = parseInt(chunkLenStr);
     if (isNaN(chunkLen) || chunkLen <= 0) chunkLen = 2;
   
