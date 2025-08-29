@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ParaMemo 1.2.16</title>
+  <title>ParaMemo 1.2.17</title>
   <style>
 body {
   margin: 0;
@@ -23,7 +23,7 @@ body {
     #4da6ff 100%
   );
   background-size: 400% 400%;
-  animation: gradientShift 35s ease infinite;
+  animation: gradientShift 45s ease infinite;
 }
 
 @keyframes gradientShift {
@@ -49,9 +49,9 @@ body {
 h1 {
   font-size: 2.8rem;
   letter-spacing: 1px;
-  text-shadow: 0 0 8px rgba(171, 93, 206, 0.7);
   margin-bottom: 10px;
   text-shadow: 0 0 6px rgba(255,255,255,0.2);
+  color: #fff; /* makes title white */
 }
 
 #console {
@@ -204,14 +204,18 @@ button:disabled {
   box-shadow: none;
 }
 
-a {
+p {
+  color: #fff;
+}
+
+p a {
   color: #FFE082;
   text-decoration: none;
   transition: text-shadow 0.2s ease;
 }
-a:hover {
+p a:hover {
   text-shadow: 0 0 6px #FFE082;
-}
+  text-decoration: underline;
 
 /* highlight styles */
 .hl-new {
@@ -248,7 +252,7 @@ a:hover {
 </head>
 <body>
 
-<h1>ParaMemo 1.2.16</h1>
+<h1>ParaMemo 1.2.17</h1>
 <br>
 <p>© 2025 Ayush Gudipati <a href="https://github.com/ayushgudipati/ParaMemo">Link to Source Code</a></p>
 <div id="console"></div>
