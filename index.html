@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ParaMemo 1.2.24</title>
+  <title>ParaMemo 1.2.25</title>
   <style>
 body {
   margin: 0;
@@ -263,7 +263,7 @@ p a:hover {
 </head>
 <body>
 
-<h1>ParaMemo 1.2.24</h1>
+<h1>ParaMemo 1.2.25</h1>
 <br>
 <p>© 2025 Ayush Gudipati <a href="https://github.com/ayushgudipati/ParaMemo">Link to Source Code</a></p>
 <div id="console"></div>
@@ -408,13 +408,16 @@ submitBtn.addEventListener('click', () => {
   userInput.value = '';
   if (state === 'inputParagraph') {
     text = input;
-  
-    // Ask for chunk length
-    let chunkLenStr = prompt("Enter chunk length (words per chunk). Leave empty for default (2):");
-    let chunkLen = parseInt(chunkLenStr);
+    clearConsole();
+    appendConsole("Paragraph saved. Enter chunk length (words per chunk). Press Enter for default (2):");
+    state = 'inputChunkLength'; // switch state
+  }
+
+  if (state === 'inputChunkLength') {
+    let chunkLen = parseInt(input);
     if (isNaN(chunkLen) || chunkLen <= 0) chunkLen = 2;
   
-    // Split into chunks of that size
+    // Split into chunks
     const rawWords = text.trim().split(/\s+/);
     words = [];
     for (let i = 0; i < rawWords.length; i += chunkLen) {
@@ -422,9 +425,11 @@ submitBtn.addEventListener('click', () => {
     }
   
     clearConsole();
-    appendConsole(`Paragraph saved. Using chunks of ${chunkLen} words. Starting practice...`);
+    appendConsole(`Using chunks of ${chunkLen} words. Starting practice...`);
+    state = 'practice';
     practiceStep();
   }
+    
   else if (state === 'waitingPracticeInput') {
     const shown = words.slice(0, currentIndex).join(' ');
     if (norm(input) === norm(shown)) {
