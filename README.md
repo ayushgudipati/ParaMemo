@@ -1,4 +1,47 @@
-# ParaMemo 1.2.0
+# ParaMemo 1.3.0  
+A Sleek Memory Training Application  
+
+The ParaMemo 1.3.0 beta version is now open for testing.  
+
+ParaMemo is a lightweight web application designed to sharpen memory and focus. By splitting text into smaller, customizable parts ("chunks"), the app helps you practice memorization step by step. With its clean glassmorphic console, moving gradient background, and smoother controls, the new UI makes memorization feel more engaging and polished.  
+
+---
+
+## Key Features  
+- **Custom Chunk Size**: Choose how many words per chunk you want to practice with (default is 2).  
+- **Interactive Practice**: Memorize text incrementally, one chunk at a time.  
+- **Structured Feedback**: Instantly see if your input is correct or incorrect, highlighted with color-coded results.  
+- **Intuitive Console UI**: Sleek, glassy console with smoother buttons and an embedded favicon for a modern look.  
+- **Progressive Memorization**: Builds from small chunks to the full paragraph, strengthening recall.  
+- **Error Details**: Pinpoints missing, extra, or incorrect words for precise feedback.  
+- **Retry Options**: Retry the final paragraph or restart the practice flow.  
+
+---
+
+## How to Use  
+1. Paste or type a paragraph into the text box, then press **Submit**.  
+2. Enter how many words per chunk you want to memorize (or leave blank to default to 2).  
+3. The app will display the first chunk. Memorize it.  
+4. When prompted, type the chunk you just memorized and press **Submit** again.  
+5. Each round adds more words until you’ve built up to the full paragraph.  
+6. At the end, test yourself by recalling the entire text.  
+7. If needed, retry the final test or redo the practice sequence.  
+
+---
+
+## Contribution  
+ParaMemo is an open-source project. Contributions are welcome — whether it’s bug fixes, feature ideas, or UI improvements. Submit an issue or a pull request on the GitHub repository.  
+
+---
+
+## Contact  
+For questions or suggestions, reach out at:  
+📧 **ayush.gudipati@gmail.com**  
+📱 **+1 (940) 279-5219**  
+
+---
+
+# ParaMemo 1.2.0 (Outdated)
 A Minimalist Memory Training Application
 
 The ParaMemo 1.2.0 beta version is now open for testing.
