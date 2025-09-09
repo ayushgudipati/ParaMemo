@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ParaMemo 1.3.5</title>
+  <title>ParaMemo 1.3.6</title>
   <link rel="icon" href="memory_icon.png" type="image/png">
   <style>
 body {
@@ -251,7 +251,7 @@ p a:hover {
 </head>
 <body>
 
-<h1>ParaMemo 1.3.5</h1>
+<h1>ParaMemo 1.3.6</h1>
 <br>
 <p>© 2025 Ayush Gudipati <a href="https://github.com/ayushgudipati/ParaMemo">Link to Source Code</a></p>
 <div id="console"></div>
@@ -383,9 +383,20 @@ function practiceStep() {
       consoleDiv.scrollTop = consoleDiv.scrollHeight;
       i++;
       setTimeout(typeNextWord, 150 + (currentIndex - 1) * 500);
+    } else {
+      // 🔥 All words typed, now wait a bit, then show input prompt
+      const pause = 800; // adjust to taste
+      setTimeout(() => {
+        clearConsole();
+        appendConsole(`Type the first ${currentIndex} chunks (${wordCount} words) and press Submit:`);
+        setPlaceholder("Type the memorized chunks here...");
+        state = 'waitingPracticeInput';
+        enableInput(); enableSubmit();
+      }, pause);
     }
   }
   typeNextWord();
+
 
   
 
@@ -404,14 +415,6 @@ function practiceStep() {
 
   updateProgress();
 
-  const displayTime = config.baseDisplayTime + (wordCount * config.wordIncrement);
-  setTimeout(() => {
-    clearConsole();
-    appendConsole(`Type the first ${currentIndex} chunks (${wordCount} words) and press Submit:`);
-    setPlaceholder("Type the memorized chunks here...");
-    state = 'waitingPracticeInput';
-    enableInput(); enableSubmit();
-  }, displayTime);
 }
 function finalScoreStep() {
   clearConsole();
