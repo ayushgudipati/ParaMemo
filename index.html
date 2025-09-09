@@ -382,10 +382,10 @@ function practiceStep() {
       activeSpan.innerHTML += (i === 0 ? "" : " ") + safeWords[i];
       consoleDiv.scrollTop = consoleDiv.scrollHeight;
       i++;
-      setTimeout(typeNextWord, 150 + (currentIndex - 1) * 500);
+      setTimeout(typeNextWord, 150 + (currentIndex - 1) * 50);
     } else {
       // 🔥 All words typed, now wait a bit, then show input prompt
-      const pause = 800; // adjust to taste
+      const pause = 600; // adjust to taste
       setTimeout(() => {
         clearConsole();
         appendConsole(`Type the first ${currentIndex} chunks (${wordCount} words) and press Submit:`);
