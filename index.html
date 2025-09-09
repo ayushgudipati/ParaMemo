@@ -382,7 +382,7 @@ function practiceStep() {
       activeSpan.innerHTML += (i === 0 ? "" : " ") + safeWords[i];
       consoleDiv.scrollTop = consoleDiv.scrollHeight;
       i++;
-      setTimeout(typeNextWord, 150 + (currentIndex - 1) * 50);
+      setTimeout(typeNextWord, 150 + (currentIndex - 1) * 500);
     }
   }
   typeNextWord();
