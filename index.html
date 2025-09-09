@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ParaMemo 1.3.6</title>
+  <title>ParaMemo 1.3.7</title>
   <link rel="icon" href="memory_icon.png" type="image/png">
   <style>
 body {
@@ -251,7 +251,7 @@ p a:hover {
 </head>
 <body>
 
-<h1>ParaMemo 1.3.6</h1>
+<h1>ParaMemo 1.3.7</h1>
 <br>
 <p>© 2025 Ayush Gudipati <a href="https://github.com/ayushgudipati/ParaMemo">Link to Source Code</a></p>
 <div id="console"></div>
@@ -397,22 +397,7 @@ function practiceStep() {
   }
   typeNextWord();
 
-
-  
-
   consoleDiv.scrollTop = consoleDiv.scrollHeight;
-
-  // fade highlight back to normal after X ms
-  setTimeout(() => {
-    const span = consoleDiv.querySelector(".hl-new");
-    if (span) {
-      span.classList.add("fade-out");
-      setTimeout(() => {
-        span.classList.remove("hl-new", "fade-out");
-      }, 1000);
-    }
-  }, config.highlightFade);
-
   updateProgress();
 
 }
