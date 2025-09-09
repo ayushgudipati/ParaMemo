@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ParaMemo 1.3.4</title>
+  <title>ParaMemo 1.3.5</title>
   <link rel="icon" href="memory_icon.png" type="image/png">
   <style>
 body {
@@ -251,7 +251,7 @@ p a:hover {
 </head>
 <body>
 
-<h1>ParaMemo 1.3.4</h1>
+<h1>ParaMemo 1.3.5</h1>
 <br>
 <p>© 2025 Ayush Gudipati <a href="https://github.com/ayushgudipati/ParaMemo">Link to Source Code</a></p>
 <div id="console"></div>
@@ -382,7 +382,7 @@ function practiceStep() {
       activeSpan.innerHTML += (i === 0 ? "" : " ") + safeWords[i];
       consoleDiv.scrollTop = consoleDiv.scrollHeight;
       i++;
-      setTimeout(typeWriter, 150 + (currentIndex - 1) * 50);
+      setTimeout(typeNextWord, 150 + (currentIndex - 1) * 50);
     }
   }
   typeNextWord();
