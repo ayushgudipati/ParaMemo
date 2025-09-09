@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ParaMemo 1.3.2</title>
+  <title>ParaMemo 1.3.3</title>
   <link rel="icon" href="memory_icon.png" type="image/png">
   <style>
 body {
@@ -265,7 +265,7 @@ p a:hover {
 </head>
 <body>
 
-<h1>ParaMemo 1.3.2</h1>
+<h1>ParaMemo 1.3.3</h1>
 <br>
 <p>© 2025 Ayush Gudipati <a href="https://github.com/ayushgudipati/ParaMemo">Link to Source Code</a></p>
 <div id="console"></div>
@@ -370,13 +370,24 @@ function practiceStep() {
   clearConsole();
   appendConsole(`Memorize the first ${currentIndex} chunks (${wordCount} words):`);
 
-  // render with highlight
-  // typewriter-style rendering
-  const targetChunk = words[currentIndex - 1]; 
+  // render old chunks instantly
+  const oldChunks = words.slice(0, currentIndex - 1)
+    .map(chunk => escapeHTML(chunk))
+    .join(" ");
+  
+  clearConsole();
+  appendConsole(`Memorize the first ${currentIndex} chunks:`);
+  
+  if (oldChunks) {
+    consoleDiv.innerHTML += oldChunks + " ";
+  }
+  
+  // typewriter for the new chunk
+  const targetChunk = words[currentIndex - 1];
   const safeWords = escapeHTML(targetChunk).split(" ");
   let i = 0;
   
-  // wrap the whole chunk in a highlight span
+  // create a highlight span for the new chunk
   consoleDiv.innerHTML += `<span class="hl-new" id="activeChunk"></span><br>`;
   const activeSpan = document.getElementById("activeChunk");
   
@@ -385,10 +396,11 @@ function practiceStep() {
       activeSpan.innerHTML += (i === 0 ? "" : " ") + safeWords[i];
       consoleDiv.scrollTop = consoleDiv.scrollHeight;
       i++;
-      setTimeout(typeNextWord, 350); // <-- slowed down delay (ms per word)
+      setTimeout(typeNextWord, 350); // typing speed
     }
   }
   typeNextWord();
+
   
 
   consoleDiv.scrollTop = consoleDiv.scrollHeight;
