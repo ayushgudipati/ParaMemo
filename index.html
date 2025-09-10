@@ -41,6 +41,17 @@ h1 {
   color: #fff; /* makes title white */
 }
 
+.highlight-version {
+  color: #FFE082;
+  text-decoration: none;
+  transition: text-shadow 0.2s ease
+}
+
+.highlight-version:hover {
+  text-shadow: 0 0 6px #FFE082;
+  text-decoration: underline;
+}
+
 #console {
   width: 90%;
   max-width: 800px;
@@ -251,7 +262,9 @@ p a:hover {
 </head>
 <body>
 
-<h1>ParaMemo v1.3.9</h1>
+<h1>
+  ParaMemo <span class="highlight-version">v1.3.10</span>
+</h1>
 <br>
 <p>© 2025 Ayush Gudipati <a href="https://github.com/ayushgudipati/ParaMemo">Link to Source Code</a></p>
 <div id="console"></div>
