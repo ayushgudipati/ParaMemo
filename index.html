@@ -382,7 +382,7 @@ function practiceStep() {
       activeSpan.innerHTML += (i === 0 ? "" : " ") + safeWords[i];
       consoleDiv.scrollTop = consoleDiv.scrollHeight;
       i++;
-      setTimeout(typeNextWord, (safeWords.length * 50) + (currentIndex - 1) * 50);
+      setTimeout(typeNextWord, (safeWords.length * 500) + (currentIndex - 1) * 50);
       
     } else {
       // 🔥 All words typed, now wait a bit, then show input prompt
